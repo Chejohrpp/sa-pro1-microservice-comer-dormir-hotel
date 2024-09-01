@@ -1,19 +1,28 @@
 package com.hrp.hotel.microservice.hotel.application.createhotelusecase;
 
+import com.hrp.hotel.microservice.common.annotation.UseCase;
 import com.hrp.hotel.microservice.hotel.domain.Hotel;
-import com.hrp.hotel.microservice.hotel.domain.HotelRepository;
+import com.hrp.hotel.microservice.hotel.infrastructure.inputports.CreateHotelInputPort;
+import com.hrp.hotel.microservice.hotel.infrastructure.outputports.db.HotelPersistencePort;
 import jakarta.transaction.Transactional;
 
+@UseCase
 @Transactional
-public class CreateHotelUseCase {
-    private final HotelRepository hotelRepository;
+public class CreateHotelUseCase implements CreateHotelInputPort {
+    private final HotelPersistencePort hotelPersistencePort;
 
-    public CreateHotelUseCase(HotelRepository hotelRepository) {
-        this.hotelRepository = hotelRepository;
+    public CreateHotelUseCase( HotelPersistencePort hotelPersistencePort) {
+        this.hotelPersistencePort = hotelPersistencePort;
     }
 
-    public void useCase(CreateHotelRequest createHotelRequest) {
+    public Hotel useCase(CreateHotelRequest createHotelRequest) {
         Hotel hotel = createHotelRequest.toHotel();
-        hotelRepository.save(hotel);
+        hotelPersistencePort.saveHotel(hotel);
+        return hotel;
+    }
+
+    @Override
+    public Hotel createHotel(CreateHotelRequest createHotelRequest) throws Exception {
+        return useCase(createHotelRequest);
     }
 }
