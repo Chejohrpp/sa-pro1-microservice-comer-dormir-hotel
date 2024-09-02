@@ -5,19 +5,16 @@ import lombok.Value;
 
 @Value
 public class CreateHotelRequest {
-    int id;
     String name;
     String address;
 
-    public CreateHotelRequest(int id, String name, String address) {
-        this.id = id;
+    public CreateHotelRequest(String name, String address) {
         this.name = name;
         this.address = address;
     }
 
     public Hotel toHotel() {
         return Hotel.builder()
-                .id(id)
                 .name(name)
                 .address(address)
                 .build();

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Builder
 public class Hotel {
 
-    private int id;
+    private Long id;
     private String name;
     private String address;
 }

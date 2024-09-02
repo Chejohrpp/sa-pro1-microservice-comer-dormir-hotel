@@ -12,7 +12,7 @@ public class Room {
 
     private int id;
     private String name;
-    private String type;
+    private TypeRoom type;
     private boolean availability;
     private double pricePerNight;
     private Hotel hotel;

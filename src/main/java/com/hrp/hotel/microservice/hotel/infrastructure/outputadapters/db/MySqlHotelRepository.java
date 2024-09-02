@@ -5,6 +5,8 @@ import com.hrp.hotel.microservice.hotel.domain.Hotel;
 import com.hrp.hotel.microservice.hotel.infrastructure.outputports.db.HotelPersistencePort;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 @PersistenceAdapter
 public class MySqlHotelRepository implements HotelPersistencePort {
     private final JpaHotelRepository jpaHotelRepository;
@@ -20,5 +22,11 @@ public class MySqlHotelRepository implements HotelPersistencePort {
         hotelEntity.setName(hotel.getName());
         hotelEntity.setAddress(hotel.getAddress());
         jpaHotelRepository.save(hotelEntity);
+    }
+
+    @Override
+    public Optional<Hotel> findHotelById(Long id) {
+        return jpaHotelRepository.findById(id)
+                .map(HotelEntity::convertToDomain);
     }
 }
