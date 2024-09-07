@@ -27,7 +27,7 @@ public class RoomEntity {
     @Enumerated(EnumType.STRING)
     private TypeRoom type;
     @Column(nullable = false)
-    private boolean availability;
+    private Boolean availability;
     @Column(nullable = false)
     private double pricePerNight;
     @Column(name = "id_hotel")

@@ -3,6 +3,8 @@ package com.hrp.hotel.microservice.hotel.infrastructure.inputadapters.restapi;
 import com.hrp.hotel.microservice.hotel.application.createhotelusecase.CreateHotelRequest;
 import com.hrp.hotel.microservice.hotel.application.createhotelusecase.CreateHotelUseCase;
 import com.hrp.hotel.microservice.hotel.infrastructure.inputports.CreateHotelInputPort;
+import com.hrp.hotel.microservice.maintenance.application.maintenanceroomusecase.MaintenanceRoomRequest;
+import com.hrp.hotel.microservice.maintenance.infrastructure.inputports.MaintenanceRoomInputport;
 import com.hrp.hotel.microservice.room.application.createroomusecase.CreateRoomRequest;
 import com.hrp.hotel.microservice.room.infraestructure.inputadapters.restapi.RoomResponse;
 import com.hrp.hotel.microservice.room.infraestructure.inputports.CreateRoomInputPort;
@@ -23,14 +25,16 @@ public class HotelController {
     private final FindRoomInputPort findRoomInputPort;
     private final GetPriceInputPort getPriceInputPort;
     private final UpdateAvailableInputPort updateAvailableInputPort;
+    private final MaintenanceRoomInputport maintenanceRoomInputport;
 
     @Autowired
-    public HotelController(CreateHotelInputPort createHotelInputPort, CreateRoomInputPort roomInputPort, FindRoomInputPort findRoomInputPort, GetPriceInputPort getPriceInputPort, UpdateAvailableInputPort updateAvailableInputPort) {
+    public HotelController(CreateHotelInputPort createHotelInputPort, CreateRoomInputPort roomInputPort, FindRoomInputPort findRoomInputPort, GetPriceInputPort getPriceInputPort, UpdateAvailableInputPort updateAvailableInputPort, MaintenanceRoomInputport maintenanceRoomInputport) {
         this.hotelInputPort = createHotelInputPort;
         this.roomInputPort = roomInputPort;
         this.findRoomInputPort = findRoomInputPort;
         this.getPriceInputPort = getPriceInputPort;
         this.updateAvailableInputPort = updateAvailableInputPort;
+        this.maintenanceRoomInputport = maintenanceRoomInputport;
     }
 
     @PostMapping
@@ -72,6 +76,14 @@ public class HotelController {
                                                        @PathVariable Boolean available) throws EntityNotFoundException {
         Boolean isUpdate = updateAvailableInputPort.updateAvailable(idhotel, roomnumber, available);
         return ResponseEntity.ok(isUpdate);
+    }
+
+    @PostMapping("{idhotel}/rooms/{roomnumber}/maintenance")
+    public ResponseEntity<HotelResponse> paidMaitenance(@PathVariable Long idhotel,
+                                                        @PathVariable String roomnumber,
+                                                        @RequestBody MaintenanceRoomRequest maintenanceRoomRequest) throws Exception{
+        maintenanceRoomInputport.paidMaintenanceRoom(roomnumber, idhotel, maintenanceRoomRequest);
+        return ResponseEntity.ok(HotelResponse.from("room was paid his maintenance"));
     }
 
 

@@ -3,6 +3,7 @@ package com.hrp.hotel.microservice.room.infraestructure.outputadapters.db;
 import com.hrp.hotel.microservice.common.annotation.PersistenceAdapter;
 import com.hrp.hotel.microservice.room.domain.Room;
 import com.hrp.hotel.microservice.room.infraestructure.outputports.RoomPersistencePort;
+import jakarta.persistence.EntityNotFoundException;
 
 import java.util.Optional;
 
@@ -44,7 +45,9 @@ public class MySqlRoomEntityOutputAdapter implements RoomPersistencePort {
 
     @Override
     public boolean updateRoomAvailable(Room room) {
-        RoomEntity roomEntity = RoomEntity.from(room);
+        RoomEntity roomEntity = jpaRoomEntityRepository.findById(room.getId())
+                        .orElseThrow(() -> new EntityNotFoundException("room not found"));
+        roomEntity.setAvailability(room.isAvailability());
         jpaRoomEntityRepository.save(roomEntity);
         return true;
     }
