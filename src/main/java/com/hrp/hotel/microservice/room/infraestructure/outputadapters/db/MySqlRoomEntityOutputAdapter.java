@@ -34,4 +34,18 @@ public class MySqlRoomEntityOutputAdapter implements RoomPersistencePort {
         return jpaRoomEntityRepository.findByNameAndHotel(name, hotelId)
                 .map(RoomEntity::toDomain);
     }
+
+    @Override
+    public double getRoomPrice(String name, Long hotelId) {
+        Double price = jpaRoomEntityRepository.findRoomPriceByNameAndHotelId(name, hotelId);
+        // If the price is null (e.g., no room found), return 0 or handle accordingly
+        return price != null ? price : 0.0;
+    }
+
+    @Override
+    public boolean updateRoomAvailable(Room room) {
+        RoomEntity roomEntity = RoomEntity.from(room);
+        jpaRoomEntityRepository.save(roomEntity);
+        return true;
+    }
 }

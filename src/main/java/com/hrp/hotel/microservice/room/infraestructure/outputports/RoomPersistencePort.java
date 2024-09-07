@@ -10,4 +10,8 @@ public interface RoomPersistencePort {
     Optional<Room> findRoomByName(String name);
 
     Optional<Room> findByNameAndIdHotel(String name, Long hotelId);
+
+    double getRoomPrice(String name, Long hotelId);
+
+    boolean updateRoomAvailable(Room room);
 }
