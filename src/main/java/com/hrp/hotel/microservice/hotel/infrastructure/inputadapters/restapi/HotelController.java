@@ -3,6 +3,7 @@ package com.hrp.hotel.microservice.hotel.infrastructure.inputadapters.restapi;
 import com.hrp.hotel.microservice.hotel.application.createhotelusecase.CreateHotelRequest;
 import com.hrp.hotel.microservice.hotel.application.createhotelusecase.CreateHotelUseCase;
 import com.hrp.hotel.microservice.hotel.infrastructure.inputports.CreateHotelInputPort;
+import com.hrp.hotel.microservice.hotel.infrastructure.inputports.FindHotelInputPort;
 import com.hrp.hotel.microservice.maintenance.application.maintenanceroomusecase.MaintenanceRoomRequest;
 import com.hrp.hotel.microservice.maintenance.infrastructure.inputports.MaintenanceRoomInputport;
 import com.hrp.hotel.microservice.room.application.createroomusecase.CreateRoomRequest;
@@ -26,15 +27,17 @@ public class HotelController {
     private final GetPriceInputPort getPriceInputPort;
     private final UpdateAvailableInputPort updateAvailableInputPort;
     private final MaintenanceRoomInputport maintenanceRoomInputport;
+    private final FindHotelInputPort findHotelInputPort;
 
     @Autowired
-    public HotelController(CreateHotelInputPort createHotelInputPort, CreateRoomInputPort roomInputPort, FindRoomInputPort findRoomInputPort, GetPriceInputPort getPriceInputPort, UpdateAvailableInputPort updateAvailableInputPort, MaintenanceRoomInputport maintenanceRoomInputport) {
+    public HotelController(CreateHotelInputPort createHotelInputPort, CreateRoomInputPort roomInputPort, FindRoomInputPort findRoomInputPort, GetPriceInputPort getPriceInputPort, UpdateAvailableInputPort updateAvailableInputPort, MaintenanceRoomInputport maintenanceRoomInputport, FindHotelInputPort findHotelInputPort) {
         this.hotelInputPort = createHotelInputPort;
         this.roomInputPort = roomInputPort;
         this.findRoomInputPort = findRoomInputPort;
         this.getPriceInputPort = getPriceInputPort;
         this.updateAvailableInputPort = updateAvailableInputPort;
         this.maintenanceRoomInputport = maintenanceRoomInputport;
+        this.findHotelInputPort = findHotelInputPort;
     }
 
     @PostMapping
@@ -86,6 +89,13 @@ public class HotelController {
         return ResponseEntity.ok(HotelResponse.from("room was paid his maintenance"));
     }
 
+    @RequestMapping(method = RequestMethod.HEAD, path = "/existing-hotel")
+    public ResponseEntity<Void> checkRoomExists(@RequestParam("hotelid") Long hotelId){
+        if(findHotelInputPort.findHotel(hotelId).isPresent()){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 
 
 }
